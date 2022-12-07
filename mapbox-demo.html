@@ -70,6 +70,25 @@
             }
         }
     });
+
+    // Get property data on click
+    map.on('click', (e) => {
+        // Set `bbox` as 5px reactangle area around clicked point.
+        const bbox = [
+            [e.point.x - 5, e.point.y - 5],
+            [e.point.x + 5, e.point.y + 5]
+        ];
+
+        // Find features intersecting the bounding box.
+        const selectedFeatures = map.queryRenderedFeatures(bbox, {
+            layers: ['faa_airports']
+        });
+
+        console.log('Found ' + selectedFeatures.length + ' features');
+        for (var i=0; i<selectedFeatures.length; i++) {
+            console.log(selectedFeatures[i]);
+        }
+    });
 </script>
 </body>
 </html>
