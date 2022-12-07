@@ -33,7 +33,7 @@
         center: [-75.4418444, 39.9229625],
         zoom: 9,
         transformRequest: function(url, resourceType) {
-           if ((resourceType === 'Source' || resourceType === 'Tile' ) && url.startsWith('http://localhost')) {
+           if ((resourceType === 'Source' || resourceType === 'Tile' ) && url.startsWith('https://maps.')) {
                 return {
                     url: url,
                     headers: {
