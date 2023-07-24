@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>Aloft Tile Server Demo</title>
+<meta name="viewport" content="initial-scale=1,maximum-scale=1,user-scalable=no">
+<link href="https://api.mapbox.com/mapbox-gl-js/v2.10.0/mapbox-gl.css" rel="stylesheet">
+<script src="https://api.mapbox.com/mapbox-gl-js/v2.10.0/mapbox-gl.js"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+<style>
+    body { margin: 0; padding: 0; }
+    #map { position: absolute; top: 0; bottom: 0; width: 100%; }
+</style>
+</head>
+<body>
+<div id="map"></div>
+<script>
+
+    // Aloft Token [REPLACE WITH YOUR TOKEN]
+    var aloftToken = '';
+
+    // Aloft API Url [REPLACE WITH PROVIDED VALUE]
+    var aloftAPIUrl = '';
+
+    // Mapbox Token [REPLACE WITH YOUR TOKEN]
+    var mapboxToken = '';
+
+    // Create Mapbox map 
+    mapboxgl.accessToken = mapboxToken;
+    const map = new mapboxgl.Map({
+        container: 'map',
+        style: 'mapbox://styles/mapbox/streets-v11',
+        center: [-75.4418444, 39.9229625],
+        zoom: 9,
+        transformRequest: function(url, resourceType) {
+           if (resourceType === 'Tile' && url.startsWith('https://maps.')) {
+                return {
+                    url: url + '?api_token=' + aloftToken,
+                };
+            }
+        },
+    });
+
+    // Load sources and layers
+    $.ajax({
+        url: aloftAPIUrl + '/v1/airspace/layers',
+        type: 'GET',
+        headers: {
+            'Authorization': 'Bearer ' + aloftToken, 
+            'Content-Type': 'application/x-www-form-urlencoded'
+        },
+        success: function(data) {
+            const sources = data.data.sources;
+            const layers = data.data.layers;
+
+            for (var i=0; i<sources.length; i++) {
+                // Append api token to source url
+                sources[i].url += '?api_token=' + aloftToken;
+
+                console.log('Added source ' + sources[i]['id']);
+                console.log(sources[i]);
+                map.addSource(sources[i]['id'], sources[i]);
+            }
+
+            for (var x=0; x<layers.length; x++) {
+                console.log('Added layer ' + layers[x]['id']);
+                console.log(layers[x]);
+                map.addLayer(layers[x]);
+            }
+        }
+    });
+</script>
+</body>
+</html>
