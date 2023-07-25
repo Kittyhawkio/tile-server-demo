@@ -35,7 +35,7 @@
         transformRequest: function(url, resourceType) {
            if (resourceType === 'Tile' && url.startsWith('https://maps.')) {
                 return {
-                    url: url + '?api_token=' + aloftToken,
+                    url: url + '?pk=' + aloftToken,
                 };
             }
         },
@@ -55,7 +55,7 @@
 
             for (var i=0; i<sources.length; i++) {
                 // Append api token to source url
-                sources[i].url += '?api_token=' + aloftToken;
+                sources[i].url += '?pk=' + aloftToken;
 
                 console.log('Added source ' + sources[i]['id']);
                 console.log(sources[i]);
