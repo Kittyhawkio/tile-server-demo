@@ -47,7 +47,7 @@
 
     // Load sources and layers
     $.ajax({
-        url: aloftAPIUrl + '/v1/airspace/layers',
+        url: aloftAPIUrl + '/v1/airspace/layers?data_formats[]=geojson&data_formats[]=vector',
         type: 'GET',
         headers: {
             'Authorization': 'Bearer ' + aloftToken, 
@@ -58,9 +58,20 @@
             const layers = data.data.layers;
 
             for (var i=0; i<sources.length; i++) {
+                var sourceData = {
+                    'type': sources[i]['type'],
+                };
+
+                // Format geojson sources slighly differently then vectors
+                if (sources[i]['type'] == 'geojson') {
+                    sourceData.data = sources[i]['data'];
+                } else {
+                    sourceData.url = sources[i]['url'];
+                }
+
                 console.log('Added source ' + sources[i]['id']);
-                console.log(sources[i]);
-                map.addSource(sources[i]['id'], sources[i]);
+                console.log(sourceData);
+                map.addSource(sources[i]['id'], sourceData);
             }
 
             for (var x=0; x<layers.length; x++) {
